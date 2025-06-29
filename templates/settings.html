@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ text.settings }}</title>
+    <style>
+        body {
+            min-height: 100vh;
+            background: #fff9ed;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 7vh;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            transition: background 0.25s, color 0.25s;
+        }
+        .settings-container {
+            background: rgba(255,255,255,0.94);
+            border-radius: 28px;
+            padding: 36px 30px 30px 30px;
+            box-shadow: 0 6px 32px #eadfa766;
+            max-width: 470px;
+            width: 97vw;
+            text-align: center;
+            position: relative;
+        }
+        .settings-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #c2a14c;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+        }
+        .setting-group {
+            margin-bottom: 2.2rem;
+            text-align: left;
+        }
+        label, .setting-group-title {
+            font-size: 1.17rem;
+            font-weight: 600;
+            margin-bottom: .7em;
+            display: block;
+            color: #9a8130;
+        }
+        select, .theme-radio {
+            font-size: 1.07rem;
+            margin: .7em 0 0 0;
+        }
+        .theme-choices {
+            display: flex;
+            gap: 22px;
+            margin-top: .6em;
+        }
+        .save-btn {
+            width: 90%;
+            margin: 0 auto;
+            padding: 1.05rem 0;
+            font-size: 1.16rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #d7b46c 0%, #c2a14c 100%);
+            color: #fff;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.13s;
+            box-shadow: 0 2px 8px #e6d6a950;
+            margin-top: 2.2rem;
+        }
+        .save-btn:active { transform: scale(0.97);}
+        .back-btn {
+            position: absolute;
+            top: 26px;
+            right: 36px;
+            min-width: 128px;
+            padding: 0.75em 0;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 999px;
+            color: #fff;
+            background: linear-gradient(90deg, #d7b46c 0%, #c2a14c 100%);
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 2px 8px #e6d6a950;
+            transition: transform 0.13s;
+            z-index: 10;
+            display: inline-block;
+        }
+        .back-btn:active { transform: scale(0.97);}
+        @media (max-width: 600px) {
+            .settings-title { font-size: 1.37rem; }
+            .settings-container { padding: 15px 2vw; }
+            .save-btn { font-size: .99rem; }
+            .back-btn {
+                top: 13px;
+                right: 10px;
+                min-width: 80px;
+                font-size: .91rem;
+                padding: .6em 0;
+            }
+        }
+        body.dark {
+            background: #28251b !important;
+            color: #e0d7b8 !important;
+        }
+        body.dark .settings-container {
+            background: #322d1d !important;
+            color: #e0d7b8;
+            box-shadow: 0 6px 32px #23200a99;
+        }
+        body.dark .settings-title {
+            color: #ffe06a !important;
+        }
+        body.dark label, body.dark .setting-group-title {
+            color: #e6d167 !important;
+        }
+        body.dark .save-btn, body.dark .back-btn {
+            background: linear-gradient(90deg, #8a791e 0%, #ccae46 100%);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <a href="/" class="back-btn">{{ text.back_to_menu }}</a>
+        <div class="settings-title">{{ text.settings }}</div>
+        <form id="settingsForm" autocomplete="off" method="POST" action="/set_language">
+            <div class="setting-group">
+                <div class="setting-group-title">{{ text.language }}:</div>
+                <select id="langSelect" name="lang" style="padding:.4em 1.2em; border-radius:8px;">
+                    <option value="zh" {% if lang == 'zh' %}selected{% endif %}>中文</option>
+                    <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+                    <option value="ko" {% if lang == 'ko' %}selected{% endif %}>한국어</option>
+                    <option value="ja" {% if lang == 'ja' %}selected{% endif %}>日本語</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <div class="setting-group-title">{{ text.theme if text.theme else '风格' }}:</div>
+                <div class="theme-choices">
+                    <label>
+                        <input type="radio" name="theme" class="theme-radio" value="light"> {{ text.light if text.light else '浅色' }}
+                    </label>
+                    <label>
+                        <input type="radio" name="theme" class="theme-radio" value="dark"> {{ text.dark if text.dark else '深色' }}
+                    </label>
+                </div>
+            </div>
+            <button class="save-btn" type="submit">{{ text.save if text.save else '保存' }}</button>
+        </form>
+    </div>
+    <script>
+        // 主题应用
+        function applyTheme(theme) {
+            if(theme === "dark") document.body.classList.add('dark');
+            else document.body.classList.remove('dark');
+        }
+        // 初始化主题和语言
+        window.onload = function() {
+            let theme = localStorage.getItem('theme') || "light";
+            document.querySelectorAll('.theme-radio').forEach(radio => {
+                radio.checked = (radio.value === theme);
+            });
+            applyTheme(theme);
+
+            let lang = localStorage.getItem('lang');
+            if(lang) document.getElementById('langSelect').value = lang;
+        }
+        // 切换主题
+        document.querySelectorAll('.theme-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                localStorage.setItem('theme', this.value);
+                applyTheme(this.value);
+            });
+        });
+        // 语言切换存储
+        document.getElementById('langSelect').addEventListener('change', function() {
+            localStorage.setItem('lang', this.value);
+        });
+    </script>
+</body>
+</html>

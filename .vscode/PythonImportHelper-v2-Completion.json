@@ -1,0 +1,292 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "sqlite3",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sqlite3",
+        "description": "sqlite3",
+        "detail": "sqlite3",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "session",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Game2048",
+        "kind": 6,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "class Game2048:\n    def __init__(self):\n        self.size = 4\n        self.board = [[0 for _ in range(self.size)] for _ in range(self.size)]\n        self.score = 0\n        self.moved = False\n        self.add_random_tile()\n        self.add_random_tile()\n    def add_random_tile(self):\n        empty_cells = [(i, j) for i in range(self.size) for j in range(self.size) if self.board[i][j] == 0]",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "guess_lang_by_ip",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def guess_lang_by_ip(ip):\n    try:\n        resp = requests.get(f'https://ipinfo.io/{ip}/json', timeout=2)\n        data = resp.json()\n        country = data.get('country')\n        if country and country in LANG_COUNTRY_MAP:\n            return LANG_COUNTRY_MAP[country]\n    except Exception:\n        pass\n    return None",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "guess_lang_from_header",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def guess_lang_from_header():\n    lang = request.accept_languages.best_match(list(LANGUAGES.keys()))\n    return lang or 'en'\n# ===== SQLite排行榜实现 =====\ndef init_db():\n    conn = sqlite3.connect(DB_PATH)\n    conn.execute('''CREATE TABLE IF NOT EXISTS scores\n                (id INTEGER PRIMARY KEY AUTOINCREMENT,\n                user TEXT, score INTEGER, date TEXT DEFAULT CURRENT_TIMESTAMP)''')\n    conn.close()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "init_db",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def init_db():\n    conn = sqlite3.connect(DB_PATH)\n    conn.execute('''CREATE TABLE IF NOT EXISTS scores\n                (id INTEGER PRIMARY KEY AUTOINCREMENT,\n                user TEXT, score INTEGER, date TEXT DEFAULT CURRENT_TIMESTAMP)''')\n    conn.close()\ndef save_score(user, score):\n    conn = sqlite3.connect(DB_PATH)\n    conn.execute(\"INSERT INTO scores (user, score) VALUES (?, ?)\", (user, score))\n    conn.commit()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "save_score",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def save_score(user, score):\n    conn = sqlite3.connect(DB_PATH)\n    conn.execute(\"INSERT INTO scores (user, score) VALUES (?, ?)\", (user, score))\n    conn.commit()\n    conn.close()\ndef load_top_scores(limit=20):  # 默认取前20名\n    conn = sqlite3.connect(DB_PATH)\n    cur = conn.execute(\"SELECT user, score, date FROM scores ORDER BY score DESC, date ASC LIMIT ?\", (limit,))\n    rows = cur.fetchall()\n    conn.close()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "load_top_scores",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def load_top_scores(limit=20):  # 默认取前20名\n    conn = sqlite3.connect(DB_PATH)\n    cur = conn.execute(\"SELECT user, score, date FROM scores ORDER BY score DESC, date ASC LIMIT ?\", (limit,))\n    rows = cur.fetchall()\n    conn.close()\n    return rows\ninit_db()\n# ===== 游戏核心 =====\nclass Game2048:\n    def __init__(self):",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def index():\n    lang = request.args.get('lang')\n    if not lang:\n        lang = session.get('lang')\n    if not lang:\n        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)\n        lang = guess_lang_by_ip(user_ip)\n    if not lang:\n        lang = guess_lang_from_header()\n    if lang not in LANGUAGES:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def settings():\n    lang = session.get('lang', 'zh')\n    return render_template('settings.html', lang=lang, text=LANGUAGES[lang], languages=LANGUAGES)\n@app.route('/set_language', methods=['POST'])\ndef set_language():\n    lang = request.form.get('lang')\n    if lang in LANGUAGES:\n        session['lang'] = lang\n    ref = request.referrer or url_for('index')\n    return redirect(f'{ref.split(\"?\")[0]}?lang={lang}')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "set_language",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def set_language():\n    lang = request.form.get('lang')\n    if lang in LANGUAGES:\n        session['lang'] = lang\n    ref = request.referrer or url_for('index')\n    return redirect(f'{ref.split(\"?\")[0]}?lang={lang}')\n@app.route('/game')\ndef game():\n    lang = session.get('lang', 'zh')\n    game = Game2048()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "game",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def game():\n    lang = session.get('lang', 'zh')\n    game = Game2048()\n    session['game_state'] = {\n        'board': game.board,\n        'score': game.score\n    }\n    session['best_score'] = session.get('best_score', 0)\n    return render_template('game.html', lang=lang, text=LANGUAGES[lang], languages=LANGUAGES)\n@app.route('/leaderboard')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "leaderboard",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def leaderboard():\n    lang = session.get('lang', 'zh')\n    return render_template('leaderboard.html', lang=lang, text=LANGUAGES[lang], languages=LANGUAGES)\n@app.route('/api/game/state')\ndef get_game_state():\n    if 'game_state' not in session:\n        game = Game2048()\n        session['game_state'] = {\n            'board': game.board,\n            'score': game.score",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_game_state",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_game_state():\n    if 'game_state' not in session:\n        game = Game2048()\n        session['game_state'] = {\n            'board': game.board,\n            'score': game.score\n        }\n    game = Game2048()\n    game.board = session['game_state']['board']\n    game.score = session['game_state']['score']",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "move",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def move():\n    direction = request.json.get('direction')\n    if 'game_state' not in session:\n        return jsonify({'error': 'No game in progress'})\n    game = Game2048()\n    game.board = session['game_state']['board']\n    game.score = session['game_state']['score']\n    if direction == 'left':\n        game.move_left()\n    elif direction == 'right':",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "restart",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def restart():\n    game = Game2048()\n    session['game_state'] = {\n        'board': game.board,\n        'score': game.score\n    }\n    state = game.get_state()\n    state['best_score'] = session.get('best_score', 0)\n    return jsonify(state)\n@app.route('/api/leaderboard')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "api_leaderboard",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def api_leaderboard():\n    scores = load_top_scores(20)\n    return jsonify([{'user': s[0], 'score': s[1], 'date': s[2]} for s in scores])\n@app.route('/api/submit_score', methods=['POST'])\ndef submit_score():\n    data = request.json\n    user = data.get('user', '匿名')\n    score = data.get('score', 0)\n    try:\n        save_score(user, int(score))",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "submit_score",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def submit_score():\n    data = request.json\n    user = data.get('user', '匿名')\n    score = data.get('score', 0)\n    try:\n        save_score(user, int(score))\n        return jsonify({'success': True})\n    except Exception as e:\n        return jsonify({'success': False, 'error': str(e)})\n# ========= 稳定的入口 ==========",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "BASE_DIR",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "BASE_DIR = os.path.dirname(os.path.abspath(__file__))\nDB_PATH = os.path.join(BASE_DIR, 'scores.db')\napp = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))\napp.secret_key = 'your-secret-key-here'\n# ===== 多语言配置 =====\nLANGUAGES = {\n    'zh': {\n        'title': '2048游戏',\n        'welcome': '欢迎来到2048游戏！',\n        'start_game': '开始游戏',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "DB_PATH",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "DB_PATH = os.path.join(BASE_DIR, 'scores.db')\napp = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))\napp.secret_key = 'your-secret-key-here'\n# ===== 多语言配置 =====\nLANGUAGES = {\n    'zh': {\n        'title': '2048游戏',\n        'welcome': '欢迎来到2048游戏！',\n        'start_game': '开始游戏',\n        'instructions': '使用方向键或WASD键移动方块，合并相同数字到达2048！',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))\napp.secret_key = 'your-secret-key-here'\n# ===== 多语言配置 =====\nLANGUAGES = {\n    'zh': {\n        'title': '2048游戏',\n        'welcome': '欢迎来到2048游戏！',\n        'start_game': '开始游戏',\n        'instructions': '使用方向键或WASD键移动方块，合并相同数字到达2048！',\n        'language': '语言',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.secret_key",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.secret_key = 'your-secret-key-here'\n# ===== 多语言配置 =====\nLANGUAGES = {\n    'zh': {\n        'title': '2048游戏',\n        'welcome': '欢迎来到2048游戏！',\n        'start_game': '开始游戏',\n        'instructions': '使用方向键或WASD键移动方块，合并相同数字到达2048！',\n        'language': '语言',\n        'game_title': '2048',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "LANGUAGES",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "LANGUAGES = {\n    'zh': {\n        'title': '2048游戏',\n        'welcome': '欢迎来到2048游戏！',\n        'start_game': '开始游戏',\n        'instructions': '使用方向键或WASD键移动方块，合并相同数字到达2048！',\n        'language': '语言',\n        'game_title': '2048',\n        'score': '分数',\n        'best': '最佳',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "LANG_COUNTRY_MAP",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "LANG_COUNTRY_MAP = {\n    'KR': 'ko', 'CN': 'zh', 'TW': 'zh', 'HK': 'zh', 'MO': 'zh', 'JP': 'ja',\n    'US': 'en', 'GB': 'en', 'AU': 'en', 'CA': 'en'\n}\ndef guess_lang_by_ip(ip):\n    try:\n        resp = requests.get(f'https://ipinfo.io/{ip}/json', timeout=2)\n        data = resp.json()\n        country = data.get('country')\n        if country and country in LANG_COUNTRY_MAP:",
+        "detail": "app",
+        "documentation": {}
+    }
+]

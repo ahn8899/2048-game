@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ text.leaderboard }}</title>
+    <style>
+        body {
+            min-height: 100vh; background: #fff9ed;
+            display: flex; justify-content: center; align-items: flex-start;
+            padding-top: 7vh; box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        .leaderboard-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 28px; padding: 38px 30px 32px 30px;
+            box-shadow: 0 6px 32px #eadfa766;
+            max-width: 480px; width: 97vw; text-align: center;
+            position: relative;
+        }
+        .lb-title { font-size: 2.2rem; font-weight: 800; color: #c2a14c; margin-bottom: 2.2rem; }
+        .back-btn {
+            position: absolute; top: 22px; right: 26px; min-width: 110px;
+            padding: 0.7em 0; font-size: 1.05rem; font-weight: bold; border: none;
+            border-radius: 999px; color: #fff; background: linear-gradient(90deg, #d7b46c 0%, #c2a14c 100%);
+            cursor: pointer; text-decoration: none; box-shadow: 0 2px 8px #e6d6a950; transition: transform 0.13s; z-index: 10;
+        }
+        .scan-btn {
+            margin: 0 auto 20px auto; padding: .8em 2.2em; font-size: 1.09rem;
+            border: none; border-radius: 999px;
+            background: linear-gradient(90deg, #ccb15a, #e5be71);
+            color: #fff; font-weight: 700; cursor: pointer;
+            box-shadow: 0 2px 8px #e6d6a950; transition: transform 0.13s;
+            display: block;
+        }
+        .lb-table { width: 100%; border-collapse: collapse; margin: 20px 0;}
+        .lb-table th, .lb-table td { padding: 0.5em 0.4em; font-size: 1.13rem; }
+        .lb-table th { color: #9a8130; }
+        .lb-table tr:nth-child(even) { background: #f7f1e1; }
+        .lb-table tr:nth-child(odd) { background: #fdf8ed; }
+        .lb-table tr.highlight { background: #fbe182; }
+        .qr-dialog {
+            display:none; position:fixed; z-index:8888; top:0; left:0; right:0; bottom:0;
+            background:rgba(255,255,255,0.98); justify-content:center; align-items:center;
+        }
+        .qr-dialog-content {
+            background:#fffbe3; border-radius:20px; padding:20px; box-shadow:0 4px 20px #0002;
+            max-width:340px; width:96vw; text-align:center;
+        }
+        .qr-dialog-close {
+            border:none; background:#ccb15a; color:#fff; font-size:1.1rem;
+            border-radius:999px; padding:.4em 2em; margin-top:18px; cursor:pointer;
+        }
+        #qr-reader {width:260px;margin:0 auto;}
+        @media (max-width: 600px) {
+            .lb-title { font-size: 1.37rem; }
+            .leaderboard-container { padding: 13px 2vw; }
+            .back-btn { top: 7px; right: 5px; min-width: 60px; font-size: .92rem; padding: .5em 0; }
+            #qr-reader {width: 96vw;}
+        }
+    </style>
+    <script src="qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+    <div class="leaderboard-container">
+        <a href="/" class="back-btn">{{ text.back_to_menu }}</a>
+        <div class="lb-title">{{ text.leaderboard }}</div>
+        <table class="lb-table" id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ text.score }}</th>
+                    <th>{{ text.language if text.language else '语言' }}</th>
+                    <th>{{ text.game_title }}</th>
+                    <th>{{ text.best }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 排行数据动态插入 -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // 仅支持后端API排行榜，无本地合并等逻辑
+        function renderLeaderboard() {
+            fetch('/api/leaderboard')
+            .then(response => response.json())
+            .then(data => {
+                data.sort((a, b) => b.score - a.score || new Date(a.date)-new Date(b.date)); // 分数降序
+                const tbody = document.querySelector('#leaderboardTable tbody');
+                tbody.innerHTML = '';
+                data.forEach((item, idx) => {
+                    let row = document.createElement('tr');
+                    row.innerHTML = `<td>${idx+1}</td>
+                        <td>${item.score}</td>
+                        <td>${item.user || '-'}</td>
+                        <td>${item.date ? item.date.split('T')[0] : '-'}</td>
+                        <td>${idx==0?'⭐':''}</td>`;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+        // ====== 扫码功能 ======
+        let qrReader = null;
+        function openQrDialog() {
+            document.getElementById('qrDialog').style.display = 'flex';
+            if (!qrReader) {
+                qrReader = new Html5Qrcode("qr-reader");
+            }
+            qrReader.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: 180
+                },
+                qrCodeMessage => {
+                    qrReader.stop();
+                    document.getElementById('qrDialog').style.display = 'none';
+                    alert('扫码成功，已复制设备ID：\n' + qrCodeMessage + '\n请前往Syncthing添加该设备ID');
+                    navigator.clipboard.writeText(qrCodeMessage);
+                    renderLeaderboard(); // 扫码后也重新渲染一次排行榜（实际上API无变化，但可以加刷新体验）
+                },
+                errorMessage => { /* 忽略解码失败 */ }
+            ).catch(e => {
+                alert('启动扫码失败：' + e);
+            });
+        }
+        function closeQrDialog() {
+            document.getElementById('qrDialog').style.display = 'none';
+            if (qrReader) qrReader.stop();
+        }
+        window.onload = renderLeaderboard;
+    </script>
+</body>
+</html>

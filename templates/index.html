@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ text.title }}</title>
+    <meta name="theme-color" content="#fff9ed">
+    <!-- PWA 必备：manifest 与 service-worker 注册 -->
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" sizes="192x192" href="/static/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/static/icon-512.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="{{ text.welcome }}">
+    <style>
+        body {
+            min-height: 100vh;
+            background: #fff9ed;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 7vh;
+            padding-bottom: 120px;
+            box-sizing: border-box;
+        }
+        .main-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+        .main-title {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 4.2rem;
+            color: #c2a14c;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        .btn-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2.6rem;
+        }
+        .main-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            height: 70px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, #d7b46c 0%, #c2a14c 100%);
+            border: none;
+            border-radius: 999px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            outline: none;
+            letter-spacing: 2px;
+            text-align: center;
+            text-decoration: none !important;
+            transition: transform 0.13s;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        .main-btn:active { transform: scale(0.97); }
+        .footer {
+            width: 100vw;
+            max-width: 480px;
+            margin: 0 auto;
+            position: fixed;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #b29a6d;
+            font-size: 1rem;
+            opacity: 0.9;
+            z-index: 99;
+            padding: 0 22px;
+        }
+        .footer a {
+            color: #ad8920;
+            text-decoration: underline;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+        @media (max-width: 600px) {
+            .main-title { font-size: 2.2rem; margin-bottom: 2.2rem;}
+            .main-btn { font-size: 1.1rem; height: 46px;}
+            body { padding-top: 3vh; padding-bottom: 60px;}
+            .footer { font-size: 0.95rem; padding: 0 8px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrap">
+        <div class="main-title">2048</div>
+        <div class="btn-list">
+            <a href="/game" class="main-btn">{{ text.start_game }}</a>
+            <a href="/leaderboard" class="main-btn">{{ text.leaderboard }}</a>
+            <a href="/settings" class="main-btn">{{ text.settings }}</a>
+        </div>
+    </div>
+    <div class="footer">
+        <span>&copy; 2024 2048</span>
+        <span>
+            <a href="/privacy.html" target="_blank">{{ text.privacy_policy or "隐私政策" }}</a>
+            <a href="mailto:your_email@example.com" target="_blank">{{ text.contact_us or "联系我们" }}</a>
+        </span>
+    </div>
+    <script>
+        // 注册PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js')
+            .catch(function(e){ /* 注册失败静默处理 */ });
+        }
+        // 可选：自动检测首次安装提示
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // 你可以在这里自定义弹窗引导用户添加到桌面
+        });
+    </script>
+</body>
+</html>
